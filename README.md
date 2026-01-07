@@ -12,8 +12,8 @@
 
 第一步:安裝套件：pip install -r requirements.txt
 
-第二步:執行爬蟲：python pacho.py (此時應產生 quotes.db 並有 50 筆資料
-)
+第二步:執行爬蟲：python pacho.py (此時應產生 quotes.db 並有 50 筆資料)
+
 第三步:啟動 API：uvicorn api:app --reload (注意：GUI 執行時，API 必須保持開啟狀態)
 
 第四步:執行 GUI：python gui.py (測試新增、刪除、修改功能是否同步影響 API 與資料庫，且操作時畫面流暢)
