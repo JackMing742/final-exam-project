@@ -6,6 +6,8 @@ import sqlite3
 app = FastAPI()
 
 
+# ----------------------------------------------------
+# Pydantic models
 class PostCreate(BaseModel):
     text: str
     author: str
@@ -17,6 +19,10 @@ class PostResponse(PostCreate):
     model_config = ConfigDict(from_attributes=True)
 
 
+# ----------------------------------------------------
+
+
+# 連線資料庫
 def get_db_connection():
     conn = sqlite3.connect("quotes.db")
     conn.row_factory = sqlite3.Row
@@ -24,11 +30,15 @@ def get_db_connection():
     return conn, cursor
 
 
+# ----------------------------------------------------
+# api根目錄訊息
 @app.get("/", response_model=dict, status_code=200)
 def root():
     return {"message": "quotes system"}
 
 
+# ----------------------------------------------------
+# CRUD 操作
 @app.get("/quotes", response_model=List[PostResponse], status_code=200)
 def get_quotes():
     conn, cursor = get_db_connection()
@@ -52,6 +62,7 @@ def get_quotes():
         conn.close()
 
 
+# ----------------------------------------------------
 @app.post("/quotes", response_model=PostResponse, status_code=200)
 def add_quote(post: PostCreate):
     conn, cursor = get_db_connection()
@@ -85,7 +96,6 @@ def update_quote(quote_id: int, post: PostCreate):
             raise HTTPException(status_code=404, detail="找不到引用")
         return PostResponse(id=quote_id, **post.model_dump())
     except Exception as e:
-
         raise HTTPException(status_code=500, detail="伺服器內部錯誤")
     finally:
         conn.close()
@@ -98,8 +108,8 @@ def delete_quote(quote_id: int):
         cursor.execute("DELETE FROM quotes WHERE id = ?", (quote_id,))
         conn.commit()
         if cursor.rowcount == 0:
-            raise HTTPException(status_code=404, detail="找不到引用")
-        return {"message": "引用已刪除"}
+            raise HTTPException(status_code=404, detail="找不到名言")
+        return {"message": "名言已刪除"}
     except Exception as e:
         raise HTTPException(status_code=500, detail="伺服器內部錯誤")
     finally:

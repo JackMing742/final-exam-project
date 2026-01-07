@@ -34,10 +34,13 @@ try:
     )
     conn.commit()
     while True:
+        # 限制最多抓取 5 頁
         if page > 5:
             print("抓取完畢")
             break
-        wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, "quote")))
+        wait.until(
+            EC.presence_of_all_elements_located((By.CLASS_NAME, "quote"))
+        )  # 等待頁面載入完成
         print(f"正在抓取第 {page} 頁的資料...")
         quotes = browser.find_elements(By.CLASS_NAME, "quote")
         for quote in quotes:
